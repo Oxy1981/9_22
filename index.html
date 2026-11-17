@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Конструювання таблиць у dat.A — робочий аркуш</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#14222e;--mut:#5a6b7a;--line:#cfd9e2;--acc:#0b5c7a;--accbg:#e1f0f6;--ok:#17743a;--okbg:#e3f5e9;--bad:#b3261e;--badbg:#fbe9e7;--key:#b8860b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1820;--card:#18242f;--ink:#e6eef4;--mut:#9fb1c0;--line:#2c3d4b;--acc:#6cc4e3;--accbg:#173545;--ok:#6fd48f;--okbg:#17321f;--bad:#ff8a80;--badbg:#3a1d1a;--key:#e8b838}}
+:root[data-theme="dark"]{--bg:#0f1820;--card:#18242f;--ink:#e6eef4;--mut:#9fb1c0;--line:#2c3d4b;--acc:#6cc4e3;--accbg:#173545;--ok:#6fd48f;--okbg:#17321f;--bad:#ff8a80;--badbg:#3a1d1a;--key:#e8b838}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Onest,system-ui,"Segoe UI",Arial,sans-serif}
+main{max-width:820px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.7rem;line-height:1.2;margin:.2em 0 .3em}
+h2{font-size:1.3rem;margin:0 0 .6em}
+h3{font-size:1.05rem;margin:1.1em 0 .4em}
+.sec{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:18px 0}
+.lead{color:var(--mut);margin:0}
+.who{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+input[type=text],select{font:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:7px 10px;max-width:100%}
+input[type=text]{flex:1 1 220px}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{border:1px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top;font-size:.93rem}
+th{background:var(--accbg)}
+code,.f{font-family:ui-monospace,Consolas,monospace;font-size:.9em;background:var(--accbg);padding:1px 6px;border-radius:5px}
+.tip{border-left:4px solid var(--acc);background:var(--accbg);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.key{color:var(--key);font-weight:700}
+ol,ul{padding-left:1.3em;margin:.3em 0}
+.task{border-top:1px solid var(--line);padding:16px 0}
+.task:first-of-type{border-top:0}
+.meta{color:var(--mut);font-size:.85rem}
+.opt{display:flex;gap:9px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.opt input{margin-top:.35em;accent-color:var(--acc)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:7px 0;border-bottom:1px dashed var(--line)}
+.row .d{flex:1 1 260px}
+.row.ok,.opt.ok{background:var(--okbg)}
+.row.bad,.opt.bad{background:var(--badbg)}
+button{font:inherit;font-weight:500;border:0;border-radius:8px;padding:9px 16px;background:var(--acc);color:#fff;cursor:pointer;margin-top:10px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button{color:#06202c}}
+:root[data-theme="dark"] button{color:#06202c}
+button.sec2{background:transparent;color:var(--acc);border:1px solid var(--acc);margin-left:8px}
+.fb{margin-top:8px;font-size:.93rem;min-height:1.2em}
+.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.pts{float:right;font-weight:700;color:var(--acc)}
+.total{text-align:center}
+.total .big{font-size:2.6rem;font-weight:700;color:var(--acc)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .4s}
+@media print{button{display:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Конструювання таблиць у dat.A</h1>
+<p class="lead">Типи полів (8 типів), первинний ключ та автоінкремент · 9 клас</p>
+<div class="who"><input type="text" id="nm" placeholder="Прізвище та ім’я" aria-label="Прізвище та ім’я"><input type="text" id="cl" placeholder="Клас" aria-label="Клас" style="flex:0 1 120px"></div>
+</header>
+
+<section class="sec" id="theory">
+<h2>1. Теорія</h2>
+<h3>Конструктор таблиці</h3>
+<p>Перед внесенням даних визначте <b>структуру таблиці</b>: її назву та перелік полів (стовпців) із типами. Конструктор відкривається так: <b>Таблиці → Створити</b> або <b>Створити → Таблиця</b>.</p>
+<div class="tip"><b>Правила іменування.</b> Назви таблиць і полів мають бути зрозумілими, короткими й не повторюватися в межах таблиці. Уникайте спецсимволів і зайвих пробілів — замінюйте їх на «_», наприклад <span class="f">Nazva_pozytsii</span> або <span class="f">Ціна_грн</span>.</div>
+
+<h3>Типи полів у dat.A</h3>
+<p>Тип поля визначає, як дані відображаються, як перевіряються під час введення і що з ними можна робити.</p>
+<div class="scroll"><table>
+<tr><th>№</th><th>Тип</th><th>Як вводиться</th><th>Для чого (кав’ярня)</th></tr>
+<tr><td>1</td><td><b>Текст</b></td><td>Звичайний рядок</td><td>Назва_страви, Опис_інгредієнтів, телефони</td></tr>
+<tr><td>2</td><td><b>Ціле число</b></td><td>Число без дробів</td><td>Калорійність, Кількість_порцій, ідентифікатори</td></tr>
+<tr><td>3</td><td><b>Дробове число</b></td><td>Число з десятковою крапкою</td><td>Ціна_грн (115.50), Об’єм_л (0.45)</td></tr>
+<tr><td>4</td><td><b>Так/Ні</b></td><td>Прапорець (галочка)</td><td>Чи_є_в_наявності, Гостра_страва</td></tr>
+<tr><td>5</td><td><b>Дата</b></td><td>Календар</td><td>Дата_додавання_в_меню, Дата_замовлення</td></tr>
+<tr><td>6</td><td><b>Зображення</b></td><td>Кнопка завантаження + мініатюра</td><td>Фото_бургера (зберігається в базі як BLOB)</td></tr>
+<tr><td>7</td><td><b>Список</b></td><td>Випадаючий список</td><td>Категорія: Напої, Бургери, Десерти</td></tr>
+<tr><td>8</td><td><b>Файл</b></td><td>Кнопка завантаження документа</td><td>Технологічна_картка_PDF</td></tr>
+</table></div>
+
+<h3>Первинний ключ і автоінкремент</h3>
+<p><span class="key">Первинний ключ (PRIMARY KEY)</span> — поле (або комбінація полів), що однозначно ідентифікує кожен запис. Його значення <b>ніколи не повторюються</b> і <b>не бувають порожніми</b>. У конструкторі ключ позначають прапорцем у стовпці зі значком золотого ключа.</p>
+<p><b>Автоінкремент (autoInc)</b> — режим для ключа типу «Ціле число» (зазвичай поле <span class="f">ID</span>). Поставивши прапорець ключа, ви побачите запит: «Встановити його тип як ціле число з автоінкрементом?».</p>
+<ul><li>Відповідь <b>«Так»</b> — база сама нумерує нові рядки: 1, 2, 3…</li>
+<li>Клітинка такого поля <b>заблокована</b> для ручного редагування — це захищає від помилок і дублікатів.</li></ul>
+</section>
+
+<section class="sec" id="trainer">
+<h2>2. Тренажер <span class="pts" id="p0">0 / 2</span></h2>
+<p class="lead">Для кожного поля за прикладом даних оберіть найкращий тип. Максимум — 2 бали (по 0,25 за кожну відповідь).</p>
+<div id="trn"></div>
+<button id="trb">Перевірити</button><button class="sec2" id="trr">Спробувати знову</button>
+<div class="fb" id="trf" aria-live="polite"></div>
+</section>
+
+<section class="sec" id="tests">
+<h2>3. Тестові завдання <span class="pts" id="ptt">0 / 6</span></h2>
+<p class="lead">Шість завдань різного типу й складності, по 1 балу кожне. Часткова правильність дає частину бала.</p>
+<div id="tl"></div>
+</section>
+
+<section class="sec total" aria-live="polite">
+<h2>Результат</h2>
+<div class="big" id="tot">0 / 8</div>
+<div class="bar"><i id="bar"></i></div>
+<p class="meta">Тренажер — до 2 балів, тести — до 6 балів. Разом — до 8 балів.</p>
+<button id="fin">Показати підсумок</button>
+<p id="sum" class="lead"></p>
+</section>
+
+<section class="sec">
+<h2>4. Практична робота (в dat.A)</h2>
+<p>Створіть структуру таблиці <b>«Меню»</b>: використайте різні типи полів, задайте первинний ключ <span class="f">ID</span> з автоінкрементом і дотримуйтеся правил іменування. Результат покажіть учителеві.</p>
+</section>
+</main>
+
+<script>
+var T=["Текст","Ціле число","Дробове число","Так/Ні","Дата","Зображення","Список","Файл"];
+var $=function(i){return document.getElementById(i)};
+var sc={tr:0,t:[0,0,0,0,0,0]};
+function upd(){var s=sc.t.reduce(function(a,b){return a+b},0);
+$("p0").textContent=sc.tr.toFixed(2).replace(/\.?0+$/,"")+" / 2";
+$("ptt").textContent=(Math.round(s*100)/100)+" / 6";
+var tot=Math.round((s+sc.tr)*100)/100;
+$("tot").textContent=tot+" / 8";$("bar").style.width=(tot/8*100)+"%";return tot}
+function fmt(n){return (Math.round(n*100)/100)}
+
+/* Тренажер */
+var TR=[
+["Значення: «Чізбургер», «Капучино»","Назва_страви",0],
+["Значення: 250, 410, 95 (ккал)","Калорійність",1],
+["Значення: 115.50, 89.90 (грн)","Ціна_грн",2],
+["Є лише два варіанти: так / ні (галочка)","Гостра_страва",3],
+["Значення: 17.11.2026","Дата_додавання_в_меню",4],
+["Картинка, що зберігається в базі","Фото_бургера",5],
+["Вибір одного: Напої, Бургери, Десерти","Категорія",6],
+["Документ PDF з інструкцією","Технологічна_картка_PDF",7]];
+var trn=$("trn");
+TR.forEach(function(r,i){var d=document.createElement("div");d.className="row";d.id="tr"+i;
+d.innerHTML='<div class="d">'+r[0]+'<br><span class="f">'+r[1]+'</span></div><select aria-label="Тип поля '+r[1]+'"><option value="">— оберіть тип —</option>'+T.map(function(t,k){return'<option value="'+k+'">'+t+'</option>'}).join("")+'</select>';trn.appendChild(d)});
+$("trb").onclick=function(){var ok=0;
+TR.forEach(function(r,i){var row=$("tr"+i),v=row.querySelector("select").value;
+row.classList.remove("ok","bad");var o=row.querySelector(".ans");if(o)o.remove();
+if(v!==""&&+v===r[2]){ok++;row.classList.add("ok")}else{row.classList.add("bad");var s=document.createElement("span");s.className="ans meta";s.textContent="Правильно: "+T[r[2]];row.appendChild(s)}});
+sc.tr=ok*0.25;var f=$("trf");f.className="fb "+(ok==8?"ok":"bad");
+f.textContent="Правильно: "+ok+" з 8 → "+sc.tr+" бала.";upd()};
+$("trr").onclick=function(){TR.forEach(function(r,i){var row=$("tr"+i);row.classList.remove("ok","bad");row.querySelector("select").value="";var o=row.querySelector(".ans");if(o)o.remove()});sc.tr=0;$("trf").textContent="";upd()};
+
+/* Тести */
+var Q=[
+{k:"single",lv:"легке",q:"Що таке первинний ключ?",o:["Поле, значення якого може повторюватися","Поле, що однозначно ідентифікує кожен запис таблиці","Пароль для відкриття бази даних","Будь-яке текстове поле"],a:1,e:"Первинний ключ однозначно ідентифікує запис: значення не повторюються й не бувають порожніми."},
+{k:"tf",lv:"легке",q:"Визначте, чи правильні твердження.",o:[["Значення первинного ключа можуть повторюватися.",0],["Тип «Зображення» зберігає фото безпосередньо в базі.",1],["У клітинку поля з автоінкрементом можна вручну ввести число.",0],["Тип «Так/Ні» відображається як прапорець (галочка).",1]],e:"Ключ унікальний; зображення — BLOB у базі; autoInc-клітинка заблокована; «Так/Ні» — checkbox."},
+{k:"multi",lv:"середнє",q:"Які поля доцільно зробити типом «Дробове число»? Оберіть усі правильні.",o:["Ціна_грн (115.50)","Об’єм_л (0.45)","Калорійність (250)","Вага_порції_г (350.5)","Кількість_порцій (2)"],a:[0,1,3],e:"Дробове число — для значень із десятковою частиною. Калорійність і кількість — цілі числа."},
+{k:"fill",lv:"середнє",q:"Режим первинного ключа, коли база сама нумерує нові рядки 1, 2, 3…, називається ______ (одне слово).",a:["автоінкремент","autoinc","auto inc"],e:"Правильна відповідь: автоінкремент (autoInc)."},
+{k:"order",lv:"складне",q:"Розташуйте кроки створення ключа з автоінкрементом у правильному порядку (оберіть номер кроку).",o:["Поставити прапорець у стовпці зі значком золотого ключа","Відкрити конструктор: Таблиці → Створити","У запиті про автоінкремент натиснути «Так»","Додати поле ID і задати тип «Ціле число»"],a:[2,0,3,1],e:"Порядок: конструктор → поле ID з типом «Ціле число» → прапорець ключа → «Так»."},
+{k:"multi",lv:"складне",q:"Таблиця «Замовлення» містить поля нижче. У яких рядках є помилка в типі або налаштуванні? Оберіть усі.",o:["ID — Текст, первинний ключ","Дата_замовлення — Текст","Сума_грн — Дробове число","Оплачено — Так/Ні","Кількість_позицій — Дробове число","Чек_PDF — Файл"],a:[0,1,4],e:"ID ключа-лічильника — Ціле число з автоінкрементом; дату зберігають типом «Дата»; кількість — Ціле число."}
+];
+var tl=$("tl");
+Q.forEach(function(q,n){var d=document.createElement("div");d.className="task";d.id="q"+n;
+var h='<b>Завдання '+(n+1)+'.</b> <span class="meta">('+q.lv+', 1 бал)</span><p>'+q.q+'</p><div class="body">';
+if(q.k=="single")q.o.forEach(function(t,i){h+='<label class="opt"><input type="radio" name="r'+n+'" value="'+i+'"><span>'+t+'</span></label>'});
+if(q.k=="multi")q.o.forEach(function(t,i){h+='<label class="opt"><input type="checkbox" value="'+i+'"><span>'+t+'</span></label>'});
+if(q.k=="tf")q.o.forEach(function(t,i){h+='<div class="row" data-i="'+i+'"><div class="d">'+t[0]+'</div><select aria-label="Твердження '+(i+1)+'"><option value="">—</option><option value="1">Правда</option><option value="0">Неправда</option></select></div>'});
+if(q.k=="order")q.o.forEach(function(t,i){h+='<div class="row" data-i="'+i+'"><div class="d">'+t+'</div><select aria-label="Номер кроку"><option value="">№</option><option value="0">1</option><option value="1">2</option><option value="2">3</option><option value="3">4</option></select></div>'});
+if(q.k=="fill")h+='<input type="text" aria-label="Відповідь">';
+h+='</div><button>Перевірити</button><div class="fb" aria-live="polite"></div>';
+d.innerHTML=h;tl.appendChild(d);
+d.querySelector("button").onclick=function(){check(n)}});
+
+function check(n){var q=Q[n],d=$("q"+n),r=0,i;
+d.querySelectorAll(".ok,.bad").forEach(function(e){e.classList.remove("ok","bad")});
+if(q.k=="single"){var c=d.querySelector("input:checked");r=c&&+c.value==q.a?1:0;
+d.querySelectorAll(".opt").forEach(function(l,i){if(i==q.a)l.classList.add("ok");else if(l.querySelector("input").checked)l.classList.add("bad")})}
+else if(q.k=="multi"){var ok=0,wr=0;d.querySelectorAll(".opt").forEach(function(l,i){var ch=l.querySelector("input").checked,is=q.a.indexOf(i)>-1;
+if(is)l.classList.add("ok");else if(ch)l.classList.add("bad");if(ch&&is)ok++;else if(ch)wr++});
+r=Math.max(0,(ok-wr)/q.a.length)}
+else if(q.k=="tf"){var ok=0;d.querySelectorAll(".row").forEach(function(w){var i=+w.dataset.i,v=w.querySelector("select").value;
+if(v!==""&&+v==q.o[i][1]){ok++;w.classList.add("ok")}else w.classList.add("bad")});r=ok/q.o.length}
+else if(q.k=="order"){var ok=0;d.querySelectorAll(".row").forEach(function(w){var i=+w.dataset.i,v=w.querySelector("select").value;
+if(v!==""&&+v==q.a.indexOf(i)){ok++;w.classList.add("ok")}else w.classList.add("bad")});r=ok/q.o.length}
+else if(q.k=="fill"){var v=d.querySelector("input").value.trim().toLowerCase().replace(/[^a-zа-яіїєґ ]/g,"");r=q.a.indexOf(v)>-1?1:0}
+r=Math.round(r*100)/100;sc.t[n]=r;var f=d.querySelector(".fb");
+f.className="fb "+(r==1?"ok":"bad");
+f.textContent=(r==1?"Вірно! ":r>0?"Частково. ":"Невірно. ")+"Бал: "+r+". "+(r==1?"":q.e);
+var p=d.querySelector(".pts");upd()}
+
+$("fin").onclick=function(){var t=upd(),n=$("nm").value.trim();
+var m=t>=7?"Відмінно! Тепер переходьте до практичної роботи.":t>=5?"Добре. Перегляньте теорію щодо завдань, де були помилки.":"Варто повторити теорію й спробувати тренажер ще раз.";
+$("sum").textContent=(n?n+": ":"")+t+" з 8 балів. "+m};
+upd();
+</script>
+</body>
+</html>
